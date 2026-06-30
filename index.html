@@ -54,6 +54,7 @@
             font-weight: 500;
             transition: opacity 0.3s;
             opacity: 0.9;
+            cursor: pointer;
         }
         
         .nav-menu a:hover {
@@ -161,6 +162,7 @@
             border-radius: 6px;
             font-size: 14px;
             transition: all 0.3s;
+            cursor: pointer;
         }
         
         .sidebar-menu a:hover {
@@ -191,6 +193,11 @@
         /* ========== CONTENT AREA ========== */
         .content {
             flex: 1;
+            display: none;
+        }
+        
+        .content.active {
+            display: block;
         }
         
         .section-header {
@@ -212,6 +219,7 @@
             font-size: 14px;
             font-weight: 500;
             transition: opacity 0.3s;
+            cursor: pointer;
         }
         
         .view-all:hover {
@@ -334,6 +342,117 @@
             color: #333;
         }
         
+        /* ========== 留言板樣式 ========== */
+        .guestbook-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comment-form {
+            background: #f8f8f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1F6B3F;
+            box-shadow: 0 0 0 3px rgba(31, 107, 63, 0.1);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #1F6B3F 0%, #0F4C2F 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .comments-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .comment-item {
+            background: #f8f8f6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1F6B3F;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #1F6B3F;
+        }
+        
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .comment-content {
+            color: #666;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+        
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
         /* ========== FOOTER ========== */
         footer {
             background: #2d2d2d;
@@ -371,6 +490,7 @@
             text-decoration: none;
             font-size: 13px;
             transition: color 0.3s;
+            cursor: pointer;
         }
         
         .footer-section a:hover {
@@ -384,6 +504,16 @@
             justify-content: space-between;
             align-items: center;
             font-size: 13px;
+            color: #999;
+        }
+        
+        .search-results {
+            margin-bottom: 20px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
             color: #999;
         }
         
@@ -442,11 +572,8 @@
         <nav>
             <div class="nav-logo">啃股</div>
             <ul class="nav-menu">
-                <li><a href="#" class="active">首頁</a></li>
-                <li><a href="#">行情</a></li>
-                <li><a href="#">自選股</a></li>
-                <li><a href="#">分析工具</a></li>
-                <li><a href="#">資訊</a></li>
+                <li><a class="nav-link active" onclick="switchPage('home')">首頁</a></li>
+                <li><a class="nav-link" onclick="switchPage('guestbook')">留言板</a></li>
             </ul>
         </nav>
         
@@ -454,8 +581,8 @@
             <h1>掌握每一個投資機會</h1>
             <p>前一晚股票行情、實時市場數據、專業分析工具</p>
             <div class="banner-search">
-                <input type="text" placeholder="搜尋股票代碼或名稱...">
-                <button>搜尋</button>
+                <input type="text" id="searchInput" placeholder="搜尋股票代碼或名稱...">
+                <button onclick="searchStock()">搜尋</button>
             </div>
         </div>
     </header>
@@ -467,201 +594,36 @@
             <div>
                 <div class="sidebar-title">主選單</div>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="active"><span class="sidebar-icon">📊</span>市場概況</a></li>
-                    <li><a href="#"><span class="sidebar-icon">🔥</span>熱門股票</a></li>
-                    <li><a href="#"><span class="sidebar-icon">⭐</span>自選股</a></li>
-                    <li><a href="#"><span class="sidebar-icon">📈</span>技術分析</a></li>
+                    <li><a class="sidebar-link active" onclick="switchPage('home')"><span class="sidebar-icon">📊</span>市場概況</a></li>
+                    <li><a class="sidebar-link" onclick="switchPage('guestbook')"><span class="sidebar-icon">💬</span>留言板</a></li>
                 </ul>
             </div>
             
             <div class="sidebar-section">
                 <div class="sidebar-title">類股查詢</div>
                 <ul class="sidebar-menu">
-                    <li><a href="#">電子業</a></li>
-                    <li><a href="#">金融業</a></li>
-                    <li><a href="#">傳產業</a></li>
-                    <li><a href="#">科技業</a></li>
-                </ul>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-title">工具</div>
-                <ul class="sidebar-menu">
-                    <li><a href="#">K線走勢</a></li>
-                    <li><a href="#">技術指標</a></li>
-                    <li><a href="#">籌碼面</a></li>
+                    <li><a onclick="filterByCategory('電子業')">電子業</a></li>
+                    <li><a onclick="filterByCategory('金融業')">金融業</a></li>
+                    <li><a onclick="filterByCategory('ETF')">ETF</a></li>
                 </ul>
             </div>
         </aside>
         
-        <!-- CONTENT -->
-        <div class="content">
+        <!-- HOME PAGE CONTENT -->
+        <div id="home" class="content active">
+            <div id="searchResults"></div>
+            
             <!-- 熱門股票 -->
             <div class="section-header">
                 <h2>🔥 本週熱門股票</h2>
-                <a href="#" class="view-all">查看全部 →</a>
             </div>
             
-            <div class="stocks-grid">
-                <!-- 台積電 -->
-                <div class="stock-card up">
-                    <div class="stock-card-header">
-                        <div>
-                            <div class="stock-code">2330</div>
-                            <div class="stock-name">台積電</div>
-                        </div>
-                        <span class="stock-tag">半導體</span>
-                    </div>
-                    <div class="stock-price">$885.00</div>
-                    <div class="stock-change">
-                        <span class="change-arrow">▲</span>
-                        <span>+5.50 (+0.62%)</span>
-                    </div>
-                    <div class="stock-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">成交量</div>
-                            <div class="stat-value">28.9M</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">本益比</div>
-                            <div class="stat-value">22.1</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 聯發科 -->
-                <div class="stock-card down">
-                    <div class="stock-card-header">
-                        <div>
-                            <div class="stock-code">2454</div>
-                            <div class="stock-name">聯發科</div>
-                        </div>
-                        <span class="stock-tag">半導體</span>
-                    </div>
-                    <div class="stock-price">$1,385.00</div>
-                    <div class="stock-change">
-                        <span class="change-arrow">▼</span>
-                        <span>-15.00 (-1.08%)</span>
-                    </div>
-                    <div class="stock-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">成交量</div>
-                            <div class="stat-value">2.15M</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">本益比</div>
-                            <div class="stat-value">24.3</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 0050 -->
-                <div class="stock-card up">
-                    <div class="stock-card-header">
-                        <div>
-                            <div class="stock-code">0050</div>
-                            <div class="stock-name">元大台灣50</div>
-                        </div>
-                        <span class="stock-tag">ETF</span>
-                    </div>
-                    <div class="stock-price">$152.50</div>
-                    <div class="stock-change">
-                        <span class="change-arrow">▲</span>
-                        <span>+2.30 (+1.53%)</span>
-                    </div>
-                    <div class="stock-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">成交量</div>
-                            <div class="stat-value">5.68M</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">殖利率</div>
-                            <div class="stat-value">2.8%</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 鴻海 -->
-                <div class="stock-card up">
-                    <div class="stock-card-header">
-                        <div>
-                            <div class="stock-code">2317</div>
-                            <div class="stock-name">鴻海</div>
-                        </div>
-                        <span class="stock-tag">電子</span>
-                    </div>
-                    <div class="stock-price">$195.00</div>
-                    <div class="stock-change">
-                        <span class="change-arrow">▲</span>
-                        <span>+3.50 (+1.82%)</span>
-                    </div>
-                    <div class="stock-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">成交量</div>
-                            <div class="stat-value">18.9M</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">本益比</div>
-                            <div class="stat-value">15.2</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 中華電 -->
-                <div class="stock-card up">
-                    <div class="stock-card-header">
-                        <div>
-                            <div class="stock-code">2412</div>
-                            <div class="stock-name">中華電</div>
-                        </div>
-                        <span class="stock-tag">通訊</span>
-                    </div>
-                    <div class="stock-price">$33.85</div>
-                    <div class="stock-change">
-                        <span class="change-arrow">▲</span>
-                        <span>+0.15 (+0.44%)</span>
-                    </div>
-                    <div class="stock-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">成交量</div>
-                            <div class="stat-value">8.76M</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">殖利率</div>
-                            <div class="stat-value">4.2%</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 聯勝光電 -->
-                <div class="stock-card up">
-                    <div class="stock-card-header">
-                        <div>
-                            <div class="stock-code">3008</div>
-                            <div class="stock-name">聯勝光電</div>
-                        </div>
-                        <span class="stock-tag">光電</span>
-                    </div>
-                    <div class="stock-price">$28.45</div>
-                    <div class="stock-change">
-                        <span class="change-arrow">▲</span>
-                        <span>+1.05 (+3.83%)</span>
-                    </div>
-                    <div class="stock-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">成交量</div>
-                            <div class="stat-value">4.2M</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">本益比</div>
-                            <div class="stat-value">20.8</div>
-                        </div>
-                    </div>
-                </div>
+            <div id="stocksGrid" class="stocks-grid">
+                <!-- 動態載入 -->
             </div>
             
             <!-- 市場指數 -->
-            <div class="section-header">
+            <div class="section-header" style="margin-top: 40px;">
                 <h2>📊 市場指數</h2>
             </div>
             
@@ -739,6 +701,35 @@
                 </div>
             </div>
         </div>
+        
+        <!-- GUESTBOOK PAGE CONTENT -->
+        <div id="guestbook" class="content">
+            <div class="guestbook-container">
+                <h2 style="margin-bottom: 24px;">💬 留言板</h2>
+                
+                <!-- 留言表單 -->
+                <div class="comment-form">
+                    <h3 style="margin-bottom: 16px; color: #333;">發表留言</h3>
+                    <form id="commentForm" onsubmit="addComment(event)">
+                        <div class="form-group">
+                            <label for="commentName">留言者：</label>
+                            <input type="text" id="commentName" required placeholder="請輸入名字">
+                        </div>
+                        <div class="form-group">
+                            <label for="commentContent">內容：</label>
+                            <textarea id="commentContent" required placeholder="請輸入留言內容..."></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">發表留言</button>
+                    </form>
+                </div>
+                
+                <!-- 留言列表 -->
+                <h3 style="margin-bottom: 16px; color: #333;">最新留言</h3>
+                <div id="commentsList" class="comments-list">
+                    <!-- 動態載入留言 -->
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- ========== FOOTER ========== -->
@@ -789,29 +780,201 @@
     </footer>
     
     <script>
-        // 互動效果
-        document.querySelectorAll('.stock-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const stockCode = this.querySelector('.stock-code').textContent;
-                const stockName = this.querySelector('.stock-name').textContent;
-                alert('股票詳情頁面（功能開發中）\n\n股票：' + stockCode + ' - ' + stockName);
+        // 股票數據
+        const mockStocks = {
+            '2330': { name: '台積電', price: 885.00, change: 5.50, changePercent: 0.62, open: 879.50, high: 890.00, low: 875.00, volume: 28900000, pe: 22.1, dy: 1.2, category: '電子業' },
+            '2454': { name: '聯發科', price: 1385.00, change: -15.00, changePercent: -1.08, open: 1400.00, high: 1405.00, low: 1380.00, volume: 2150000, pe: 24.3, dy: 0.9, category: '電子業' },
+            '0050': { name: '元大台灣50', price: 152.50, change: 2.30, changePercent: 1.53, open: 150.20, high: 153.00, low: 149.80, volume: 5680000, pe: 18.5, dy: 2.8, category: 'ETF' },
+            '2317': { name: '鴻海', price: 195.00, change: 3.50, changePercent: 1.82, open: 191.50, high: 196.00, low: 191.00, volume: 18900000, pe: 15.2, dy: 2.1, category: '電子業' },
+            '2412': { name: '中華電', price: 33.85, change: 0.15, changePercent: 0.44, open: 33.70, high: 34.00, low: 33.50, volume: 8760000, pe: 12.5, dy: 4.2, category: '金融業' },
+            '3008': { name: '聯勝光電', price: 28.45, change: 1.05, changePercent: 3.83, open: 27.40, high: 28.50, low: 27.30, volume: 4200000, pe: 20.8, dy: 1.5, category: '電子業' }
+        };
+        
+        // 留言數據
+        let comments = [
+            { 留言者: '俊宏', 時間: '2026-06-30', 內容: '阿肯好猛！' },
+            { 留言者: '小明', 時間: '2026-06-29', 內容: '這個平台真的不錯，股票資訊很齊全！' },
+            { 留言者: '股市新手', 時間: '2026-06-28', 內容: '搜尋功能很方便，讚讚！' }
+        ];
+        
+        // 初始化頁面
+        window.onload = function() {
+            displayStocks(Object.entries(mockStocks));
+            displayComments();
+            
+            // Enter鍵搜尋
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchStock();
+                }
             });
-        });
+        };
         
-        document.querySelector('.banner-search button').addEventListener('click', function() {
-            const input = document.querySelector('.banner-search input');
-            if (input.value.trim()) {
-                alert('搜尋：' + input.value);
-            } else {
+        // 搜尋功能
+        function searchStock() {
+            const query = document.getElementById('searchInput').value.trim().toUpperCase();
+            
+            if (!query) {
                 alert('請輸入股票代碼或名稱');
+                return;
             }
-        });
+            
+            const results = Object.entries(mockStocks).filter(([code, stock]) =>
+                code.includes(query) || stock.name.toUpperCase().includes(query)
+            );
+            
+            switchPage('home');
+            
+            if (results.length === 0) {
+                document.getElementById('searchResults').innerHTML = `
+                    <div class="no-results">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                        <div style="font-size: 18px; font-weight: 600; color: #333; margin-bottom: 8px;">找不到相關股票</div>
+                        <div>試試看其他股票代碼或名稱</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('searchResults').innerHTML = `
+                <div class="search-results">
+                    <div class="section-header">
+                        <h2>🔍 搜尋結果 (${results.length})</h2>
+                        <a class="view-all" onclick="clearSearch()">清除搜尋 ✕</a>
+                    </div>
+                </div>
+            `;
+            
+            displayStocks(results);
+        }
         
-        document.querySelector('.banner-search input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.querySelector('.banner-search button').click();
+        // 清除搜尋
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            displayStocks(Object.entries(mockStocks));
+        }
+        
+        // 按類股過濾
+        function filterByCategory(category) {
+            const results = Object.entries(mockStocks).filter(([code, stock]) =>
+                stock.category === category
+            );
+            
+            switchPage('home');
+            document.getElementById('searchResults').innerHTML = `
+                <div class="search-results">
+                    <div class="section-header">
+                        <h2>📂 ${category} (${results.length})</h2>
+                        <a class="view-all" onclick="clearSearch()">返回 ✕</a>
+                    </div>
+                </div>
+            `;
+            
+            displayStocks(results);
+        }
+        
+        // 顯示股票
+        function displayStocks(stocks) {
+            const grid = document.getElementById('stocksGrid');
+            grid.innerHTML = stocks.map(([code, stock]) => `
+                <div class="stock-card ${stock.change >= 0 ? 'up' : 'down'}">
+                    <div class="stock-card-header">
+                        <div>
+                            <div class="stock-code">${code}</div>
+                            <div class="stock-name">${stock.name}</div>
+                        </div>
+                        <span class="stock-tag">${stock.category}</span>
+                    </div>
+                    <div class="stock-price">$${stock.price.toFixed(2)}</div>
+                    <div class="stock-change">
+                        <span class="change-arrow">${stock.change >= 0 ? '▲' : '▼'}</span>
+                        <span>${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)} (${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%)</span>
+                    </div>
+                    <div class="stock-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">成交量</div>
+                            <div class="stat-value">${(stock.volume / 1000000).toFixed(1)}M</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">本益比</div>
+                            <div class="stat-value">${stock.pe.toFixed(1)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 切換頁面
+        function switchPage(page) {
+            // 隱藏所有內容
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            
+            // 顯示選定頁面
+            document.getElementById(page).classList.add('active');
+            
+            // 更新導航狀態
+            document.querySelectorAll(`.nav-link[onclick="switchPage('${page}')"]`).forEach(el => el.classList.add('active'));
+            document.querySelectorAll(`.sidebar-link[onclick="switchPage('${page}')"]`).forEach(el => el.classList.add('active'));
+        }
+        
+        // 添加留言
+        function addComment(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('commentName').value.trim();
+            const content = document.getElementById('commentContent').value.trim();
+            
+            if (!name || !content) {
+                alert('請填寫所有欄位');
+                return;
             }
-        });
+            
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
+            
+            comments.unshift({
+                留言者: name,
+                時間: dateStr,
+                內容: content
+            });
+            
+            // 清空表單
+            document.getElementById('commentForm').reset();
+            
+            // 重新顯示留言
+            displayComments();
+            
+            alert('留言發表成功！');
+        }
+        
+        // 顯示留言
+        function displayComments() {
+            const container = document.getElementById('commentsList');
+            
+            if (comments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-message">
+                        <div class="empty-icon">💭</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">還沒有留言</div>
+                        <div>快來發表你的想法吧！</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.留言者}</span>
+                        <span class="comment-time">${comment.時間}</span>
+                    </div>
+                    <div class="comment-content">${comment.內容}</div>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>
